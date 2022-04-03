@@ -14,7 +14,52 @@ const AddMedicine=()=>{
 	const [stock,setStock]=useState("");
 	const [description,setDescription]=useState("");
 
+	const [darray,setDarray]=useState([]);
+	const [marray,setMarray]=useState([]);
+
+    useEffect(()=>{
+    	fetch("/allMedicine")
+    	.then(res=>res.json())
+	    .then(result=>{
+	    	setMarray(result);
+	    })
+	    return ()=>{};
+	},[]);
+
+    useEffect(()=>{
+    	fetch("/allDealer",{
+    		headers:{
+    			"authorization":"Bearer " + localStorage.getItem("jwt")
+    		}
+    	})
+    	.then(res=>res.json())
+	    .then(result=>{
+	    	setDarray(result);
+	    })
+	    return ()=>{};
+	},[]);
+
     const postMedicine=()=>{
+		var avail = false;
+		darray.map((del) => {
+			if(del.name==dname) avail = true;
+		})
+		if(!avail){
+			alert("Add the Dealer's data to database First");
+			history.push("/addDealer");
+		}
+		else{
+		  var find = false;
+		  var id;
+		  var x;
+		  marray.map((med)=>{
+			  if(med.code==code && med.mname==mname && med.dname==dname){
+				  find = true;
+				  id = med._id;
+				  x = med.stock;
+			  }
+		  })
+		  if(find==false){
 	      fetch("/addMedicine",{
 	      method:"post",
 	      headers:{
@@ -38,7 +83,14 @@ const AddMedicine=()=>{
 	        history.push("/viewMedicine");
 	      }
 	    })
+		}
+		else{
+			history.push("/updateMedicine/"+id);
+			x+=stock;
+			alert("update stock to"+ x)
+		}
 	  }
+	}
 	  
 	// const reset=()=>{
 	//   	setCode("");

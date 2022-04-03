@@ -13,7 +13,24 @@ const AddCustomer=()=>{
 	const [email,setEmail]=useState("");
 	//const [comp,setComp] = useState("");
 
+	const [carray,setCarray]=useState([]);
+
+    useEffect(()=>{
+    	fetch("/allCustomer")
+    	.then(res=>res.json())
+	    .then(result=>{
+	    	setCarray(result);
+	    })
+	    return ()=>{};
+	},[]);
+
     const postCustomer=()=>{
+		var avail = false;
+			carray.map((cus) => {
+			if(cus.name==name && cus.number==num && cus.address==address) avail = true;
+		})
+		if(avail) alert("Customer Data already available");
+		else{
 	      fetch("/addCustomer",{
 	      method:"post",
 	      headers:{
@@ -37,6 +54,7 @@ const AddCustomer=()=>{
 	      }
 	    })
 	  }
+	}
 
 	  // const reset=()=>{
 	  // 	setName("");

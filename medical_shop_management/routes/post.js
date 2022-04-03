@@ -100,7 +100,7 @@ router.get('/allCustomer',async(req,res)=>{
 
 router.post('/addCustomer',async(req,res)=>{
 	const {name,address,num,email}=req.body;
-	//comp = name+num;
+
 	if(!name||!address||!num||!email)
 		return res.status(422).json({error:"please add all the fields"});
 	if(!/^[A-Za-z ]+$/.test(name))
@@ -110,7 +110,7 @@ router.post('/addCustomer',async(req,res)=>{
     if(!/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(email))
     	return res.status(422).json({error:"invalid email"});
 	const customer=new Customer({
-		name,address,number:num,email,comp
+		name,address,number:num,email
 	})
 	const newCustomer=await customer.save();
 	if(newCustomer){
@@ -227,7 +227,7 @@ router.put('/updateMedicine/:id',async(req,res)=>{
 			return res.status(422).json({error:"name should contain alphabet characters only"});
 
 		const updatedMedicine=await medicine.save();
-		if(updatedMedicine){
+		if(updatedMedicine){ 
 			return res.status(200).send({message:"medicine updated",data:updatedMedicine});
 		}
 	}

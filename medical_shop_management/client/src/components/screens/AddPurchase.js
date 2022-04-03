@@ -1,4 +1,4 @@
-import React,{useState} from 'react';
+import React,{useEffect, useState} from 'react';
 import '../../App.css';
 import M from 'materialize-css';
 import {Link,useHistory} from 'react-router-dom';
@@ -13,7 +13,69 @@ const AddPurchase=()=>{
 	const [price,setPrice]=useState("");
 	const [quantity,setQuantity]=useState("");
 
+	// const [code,setCode]=useState("");
+	// const [mname,setMname]=useState("");
+	// const [dname,setDname]=useState("");
+	// const [price1,setPrice1]=useState("");
+	// const [stock,setStock]=useState("");
+	// const [description,setDescription]=useState("");
+    
+
+	const [carray,setCarray]=useState([]);
+
+    useEffect(()=>{
+    	fetch("/allCustomer")
+    	.then(res=>res.json())
+	    .then(result=>{
+	    	setCarray(result);
+	    })
+	    return ()=>{};
+	},[]);
+	const [marray,setMarray]=useState([]);
+
+    useEffect(()=>{
+    	fetch("/allMedicine")
+    	.then(res=>res.json())
+	    .then(result=>{
+	    	setMarray(result);
+	    })
+	    return ()=>{};
+	},[]);
+
+	function wait(ms){
+		var start = new Date().getTime();
+		var end = start;
+		while(end < start + ms) {
+		  end = new Date().getTime();
+	   }
+	 }
     const postPurchase=()=>{
+		  var avail = false;
+		  var id;
+		  var x;
+		  carray.map((cus) => {
+			  if(cus.name==cname && cus.number==num) avail = true;
+		  })
+		  if(!avail){
+			  alert("Add the Customer data to database First");
+			  history.push("/addCustomer")
+		  }
+		  else{
+		  var check_med = false;
+		  var check_stock = false;
+		  marray.map((med) =>{
+			  if(med.mname==pname){
+				  check_med = true;
+				  if(med.stock >= quantity){
+					  id = med._id
+					  check_stock = true;
+					  x = med.stock - quantity
+				  }
+			  }
+		  })
+		  if(!check_med) alert("The Product is not available in the shop");
+		  else if(!check_stock) alert("The Product is not available in the required quantity");
+		  else if(check_med && check_stock){
 	      fetch("/addPurchase",{
 	      method:"post",
 	      headers:{
@@ -33,10 +95,14 @@ const AddPurchase=()=>{
 	      }
 	      else{
 	        M.toast({html: data.message,classes:"#43a047 green darken-1"})
-	        history.push("/viewPurchase");
+	        history.push("/updateMedicine/"+id);
+			alert("update stock to"+ x)
 	      }
 	    })
+		
 	  }
+	}
+	}
 
 	  // const reset=()=>{
 	  // 	setPname("");

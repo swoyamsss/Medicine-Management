@@ -11,12 +11,32 @@ const AddDealer=(props)=>{
 	const [address,setAddress]=useState("");
 	const [num,setNum]=useState("");
 	const [email,setEmail]=useState("");
+	const [darray,setDarray]=useState([]);
+
+    useEffect(()=>{
+    	fetch("/allDealer",{
+    		headers:{
+    			"authorization":"Bearer " + localStorage.getItem("jwt")
+    		}
+    	})
+    	.then(res=>res.json())
+	    .then(result=>{
+	    	setDarray(result);
+	    })
+	    return ()=>{};
+	},[]);
 
 	const cancel=()=>{
 		history.push("/");
 	}
-
+    
     const postDealer=()=>{
+		var avail = false;
+			darray.map((del) => {
+			if(del.number==num && del.address==address) avail = true;
+		})
+		if(avail) alert("Dealer's Data already available");
+		else{
 	      fetch("/addDealer",{
 	      method:"post",
 	      headers:{
@@ -39,6 +59,7 @@ const AddDealer=(props)=>{
 	      }
 	    })
 	  }
+	}
 
 	  // const reset=()=>{
 	  // 	setName("");

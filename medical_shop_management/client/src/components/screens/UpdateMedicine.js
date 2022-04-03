@@ -35,6 +35,7 @@ const UpdateMedicine=(props)=>{
 
 
 	  const updateMedicine=()=>{
+		  //console.log(props.match.params.id)
 	  	fetch("/updateMedicine/"+props.match.params.id,{
 	      method:"put",
 	      headers:{

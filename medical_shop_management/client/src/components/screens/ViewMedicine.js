@@ -55,7 +55,7 @@ const ViewMedicine=()=>{
 				            			<td>{el.mname}</td>
 				            			<td>{el.dname}</td>
 				            			<td>{el.price}</td>
-				            			<td>9{el.stock}</td>
+				            			<td>{el.stock}</td>
 				            			<td>{el.description}</td>
 				            		</tr>
 					        	})
